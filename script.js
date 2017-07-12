@@ -1,3 +1,9 @@
+/**
+ * Absolute path to CSS file
+ * TODO - take out of DropBox and add it as <style></style> inline
+ * @type {String}
+ */
+const CSS_PATH = 'https://dl.dropboxusercontent.com/s/ied9loy260tky9j/widget.css?dl=0';
 
 /**
  * Returns whether the argument is a currently present in the DOM HTMLNode or not
@@ -175,6 +181,18 @@ function appendContainerBody(containerId, classNamespace) {
 }
 
 /**
+ * Helper method that appends a CSS file to the page's head
+ */
+function appendCSS(path) {
+  const cssNode = document.createElement('link');
+  cssNode.type = 'text/css';
+  cssNode.rel = 'stylesheet';
+  cssNode.href = path;
+  cssNode.title = 'Bookmarklet CSS';
+  document.getElementsByTagName('head')[0].appendChild(cssNode);
+}
+
+/**
  * @class MicroSchemaParser
  */
 class MicroSchemaParser {
@@ -289,6 +307,30 @@ class MicroSchemaParser {
     }
   }
 
+  hasSetupRender() {
+    // Never proceed if we have an error
+    if (this.isError) {
+      this.renderError();
+      return false;
+    }
+
+    // Append CSS if not present
+    if (!document.querySelectorAll(`link[href='${CSS_PATH}']`).length) {
+      appendCSS(CSS_PATH);
+    }
+
+    // parse method has not been called. Call it before rendering json.
+    if (!this.hasData) {
+      this.parsePage();
+    }
+
+    // Clear containers content
+    this.clearContainer();
+
+    // Flag we finished setting up
+    return true;
+  }
+
   /**
    * Renders an error message in our container
    * @param  {String} [err] - if empty will default to instance's previously caught errors
@@ -308,19 +350,9 @@ class MicroSchemaParser {
    * Renders a representation of our parsed data as a HTML Table
    */
   renderTable() {
-    // Never proceed if we have an error
-    if (this.isError) {
-      this.renderError();
+    if (!this.hasSetupRender()) {
       return;
     }
-
-    // parse method has not been called. Call it before rendering json.
-    if (!this.hasData) {
-      this.parsePage();
-    }
-
-    // Clear containers content
-    this.clearContainer();
 
     // Iterate through each found schema
     // Each of them will be a table
@@ -374,19 +406,9 @@ class MicroSchemaParser {
    * Renders a representation of our parsed data as a JSON Object inside a HTMLtextarea
    */
   renderJSON() {
-    // Never proceed if we have an error
-    if (this.isError) {
-      this.renderError();
+    if (!this.hasSetupRender()) {
       return;
     }
-
-    // parse method has not been called. Call it before rendering json.
-    if (!this.hasData) {
-      this.parsePage();
-    }
-
-    // Clear containers content
-    this.clearContainer();
 
     // Finaly show parsed jSON in a textarea
     const textArea = document.createElement('textarea');

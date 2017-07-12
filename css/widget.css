@@ -53,8 +53,6 @@
     padding: 0.5em 1em; /* cell padding */
 }
 
-/* Consider removing this next declaration block, as it causes problems when
-there's a rowspan on the first cell. Case added to the tests. issue#432 */
 .schema-parser__table td:first-child,
 .schema-parser__table th:first-child {
     border-left-width: 0;
