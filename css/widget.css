@@ -1,0 +1,126 @@
+/* Container
+   ========================================================================== */
+.schema-parser__container {
+    /* Stick to bottom */
+    background-color: #fff;
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    max-width: calc(100% - 2em);
+    font-size: 0.8rem;
+    color: #777;
+    text-shadow: none;
+    box-shadow: 0 0 5rem rgba(0,0,0,.5);
+}
+
+/* Tables
+   ========================================================================== */
+.schema-parser__table {
+    /* Remove spacing between table cells (from Normalize.css) */
+    border-collapse: collapse;
+    border-bottom: 1px solid #cbcbcb;
+    border-spacing: 0;
+    empty-cells: show;
+    border: 1px solid #cbcbcb;
+    width: 100%;
+}
+
+.schema-parser__table a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.schema-parser__table caption {
+    color: #000;
+    font: italic 85%/1 arial, sans-serif;
+    padding: 1em 0;
+    text-align: center;
+}
+
+/* nested tables */
+.schema-parser__table table {
+    font-size: 85%;
+    width: 100%;
+}
+
+.schema-parser__table td,
+.schema-parser__table th {
+    border-left: 1px solid #cbcbcb;/*  inner column border */
+    border-width: 0 0 0 1px;
+    font-size: inherit;
+    margin: 0;
+    overflow: visible; /*to make ths where the title is really long work*/
+    padding: 0.5em 1em; /* cell padding */
+}
+
+/* Consider removing this next declaration block, as it causes problems when
+there's a rowspan on the first cell. Case added to the tests. issue#432 */
+.schema-parser__table td:first-child,
+.schema-parser__table th:first-child {
+    border-left-width: 0;
+}
+
+.schema-parser__table td:second-child {
+    font-size: 90%;
+}
+
+.schema-parser__table thead {
+    background-color: #e0e0e0;
+    color: #000;
+    text-align: left;
+    vertical-align: bottom;
+}
+
+/*
+striping:
+*/
+.schema-parser__table td {
+    background-color: transparent;
+}
+/* nth-child selector for modern browsers */
+.schema-parser__table tr:nth-child(2n-1) td {
+    background-color: #f2f2f2;
+}
+
+/*
+borders:
+*/
+.schema-parser__table td {
+    border-bottom: 1px solid #cbcbcb;
+}
+
+.schema-parser__table tbody > tr:last-child > td {
+    border-bottom-width: 0;
+}
+
+.schema-parser__table td.nested {
+    padding: 0;
+}
+
+.schema-parser__table img {
+    max-width: 20%;
+    display: block;
+}
+
+/* Close
+   ========================================================================== */
+.schema-parser__close {
+  color: #777;
+  font: 14px/100% arial, sans-serif;
+  position: absolute;
+  right: 5px;
+  text-decoration: none;
+  text-shadow: 0 1px 0 #fff;
+  top: 5px;
+  z-index: 1;
+  cursor: pointer;
+}
+.schema-parser__close::after {
+  content: '✖'; /* UTF-8 symbol */
+}
+
+@media (min-width: 62em) {
+    .schema-parser__container {
+        max-width: calc(50% - 2em);
+    }
+}
