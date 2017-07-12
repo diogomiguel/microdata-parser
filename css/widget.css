@@ -7,20 +7,27 @@
     bottom: 1em;
     right: 1em;
     max-width: calc(100% - 2em);
-    font-size: 0.8rem;
     color: #777;
     text-shadow: none;
     box-shadow: 0 0 5rem rgba(0,0,0,.5);
+    z-index: 9999;
+    font-size: 0.8rem;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 }
 
 /* Tables
    ========================================================================== */
-.schema-parser__table {
+.schema-parser__container table {
+    padding: 0;
+    margin: 0;
     /* Remove spacing between table cells (from Normalize.css) */
     border-collapse: collapse;
-    border-bottom: 1px solid #cbcbcb;
     border-spacing: 0;
     empty-cells: show;
+}
+
+.schema-parser__table {
+    border-bottom: 1px solid #cbcbcb;
     border: 1px solid #cbcbcb;
     width: 100%;
 }
@@ -35,12 +42,14 @@
     font: italic 85%/1 arial, sans-serif;
     padding: 1em 0;
     text-align: center;
+    caption-side: bottom;
 }
 
 /* nested tables */
 .schema-parser__table table {
     font-size: 85%;
     width: 100%;
+    border-collapse: separate;
 }
 
 .schema-parser__table td,
@@ -51,6 +60,8 @@
     margin: 0;
     overflow: visible; /*to make ths where the title is really long work*/
     padding: 0.5em 1em; /* cell padding */
+    color: #777;
+    text-align: center;
 }
 
 .schema-parser__table td:first-child,
@@ -72,8 +83,13 @@
 /*
 striping:
 */
+.schema-parser__table th {
+    background-color: #e0e0e0;
+    color: #000;
+    font-weight: 500;
+}
 .schema-parser__table td {
-    background-color: transparent;
+    background-color: #fff;
 }
 /* nth-child selector for modern browsers */
 .schema-parser__table tr:nth-child(2n-1) td {
@@ -104,7 +120,6 @@ borders:
    ========================================================================== */
 .schema-parser__close {
   color: #777;
-  font: 14px/100% arial, sans-serif;
   position: absolute;
   right: 5px;
   text-decoration: none;
@@ -112,6 +127,11 @@ borders:
   top: 5px;
   z-index: 1;
   cursor: pointer;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 1em;
 }
 .schema-parser__close::after {
   content: '✖'; /* UTF-8 symbol */

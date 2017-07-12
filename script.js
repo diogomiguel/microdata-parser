@@ -3,7 +3,7 @@
  * TODO - take out of DropBox and add it as <style></style> inline
  * @type {String}
  */
-const CSS_PATH = 'https://dl.dropboxusercontent.com/s/ied9loy260tky9j/widget.css?dl=0';
+const CSS_PATH = 'https://dl.dropboxusercontent.com/s/p8uck0xoffp2l5y/widget.css?dl=0';
 
 /**
  * Returns whether the argument is a currently present in the DOM HTMLNode or not
@@ -307,13 +307,11 @@ class MicroSchemaParser {
     }
   }
 
+  /**
+   * To run before any rendering method to setup CSS+container and check errors after parsing
+   * @return {Boolean}
+   */
   hasSetupRender() {
-    // Never proceed if we have an error
-    if (this.isError) {
-      this.renderError();
-      return false;
-    }
-
     // Append CSS if not present
     if (!document.querySelectorAll(`link[href='${CSS_PATH}']`).length) {
       appendCSS(CSS_PATH);
@@ -322,6 +320,12 @@ class MicroSchemaParser {
     // parse method has not been called. Call it before rendering json.
     if (!this.hasData) {
       this.parsePage();
+    }
+
+    // Never proceed if we have an error
+    if (this.isError) {
+      this.renderError();
+      return false;
     }
 
     // Clear containers content
