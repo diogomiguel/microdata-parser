@@ -110,7 +110,7 @@ function generateTableBody(parentTBody, curSchema) {
       innerTbl.appendChild(innerTblTbody);
       valueCell.appendChild(innerTbl);
       // We tell this is a td with a nested table
-      valueCell.className = 'td--nested';
+      valueCell.className = 'nested';
     } else {
       // The last node!
       valueCell.appendChild(createLastNodeElement(childObj));
@@ -167,7 +167,7 @@ function appendContainerBody(containerId, classNamespace) {
 
   const div = document.createElement('div');
   div.id = containerId;
-  div.class = `${classNamespace}__container`;
+  div.className = `${classNamespace}__container`;
 
   body.appendChild(div);
 
@@ -184,10 +184,17 @@ class MicroSchemaParser {
    * @param  {String} [options.containerId='jsSchemaParser']
    * @param  {String} [options.classNamespace='schema-parser']
    */
-  constructor({ schemaName = 'Product', containerId = 'jsSchemaParser', classNamespace = 'schema-parser' } = {}) {
+  constructor({
+    schemaName = 'Product',
+    containerId = 'jsSchemaParser',
+    classNamespace = 'schema-parser',
+    maxTables = 1,
+  } = {}) {
+    // Set options with defaults + args
     this.schemaName = schemaName;
     this.containerId = containerId;
     this.classNamespace = classNamespace;
+    this.maxTables = maxTables;
 
     this.parsedData = [];
     this.error = null;
@@ -252,13 +259,14 @@ class MicroSchemaParser {
 
       // All good. Start iterating through the DOM
       itemTypeNodes.forEach((el) => {
-        const itemTypeData = parseNestedItemProps(el);
+        // Restrict to max tables defined
+        if (this.parsedData.length < this.maxTables) {
+          const itemTypeData = parseNestedItemProps(el);
 
-        if (itemTypeData) {
-          this.parsedData.push(itemTypeData);
+          if (itemTypeData) {
+            this.parsedData.push(itemTypeData);
+          }
         }
-
-        return null;
       });
 
       if (!this.hasData) {
@@ -320,32 +328,50 @@ class MicroSchemaParser {
       const tbl = document.createElement('table');
       tbl.className = `${this.classNamespace}__table`;
 
+      // Caption
+      const tblCaption = document.createElement('caption');
+      const tblCaptionText = document.createTextNode(`Generated ${this.schemaName} Schema Table #${i + 1}`);
+      tblCaption.appendChild(tblCaptionText);
+
       // Table Head
       const tblHead = document.createElement('thead');
       const tblHeadRow = document.createElement('tr');
-      const tblHeadTh = document.createElement('th');
-      const tblHeadThText = document.createTextNode(`${this.schemaName} Table #${i}`);
-      tblHeadTh.setAttribute('colspan', '2');
-      tblHeadTh.appendChild(tblHeadThText);
-      tblHeadRow.appendChild(tblHeadTh);
+      const tblHeadTh1 = document.createElement('th');
+      const tblHeadTh2 = document.createElement('th');
+      const tblHeadTh1Text = document.createTextNode('itemprop');
+      const tblHeadTh2Text = document.createTextNode('value');
+      tblHeadTh1.appendChild(tblHeadTh1Text);
+      tblHeadTh2.appendChild(tblHeadTh2Text);
+      tblHeadRow.appendChild(tblHeadTh1);
+      tblHeadRow.appendChild(tblHeadTh2);
       tblHead.appendChild(tblHeadRow);
 
       const tblBody = document.createElement('tbody');
 
       generateTableBody(tblBody, schemaData);
 
-      // put the <tbody> in the <table>
+      // put the <caption> <thead> <tbody> in the <table>
+      tbl.appendChild(tblCaption);
       tbl.appendChild(tblHead);
       tbl.appendChild(tblBody);
-      // appends <table> into <container>
+      // appends <table> into container
       this.containerEl.appendChild(tbl);
       // sets the border attribute of tbl to 0;
       tbl.setAttribute('border', '0');
     });
+
+    // Close table btn
+    const closeBtn = document.createElement('button');
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.setAttribute('type', 'button');
+    closeBtn.className = 'schema-parser__close';
+    this.containerEl.appendChild(closeBtn);
+    // Add close handler
+    closeBtn.addEventListener('click', this.handleClose.bind(this));
   }
 
   /**
-   * Renders a representation of our parsed data as a JSON Object inside a HTML textarea
+   * Renders a representation of our parsed data as a JSON Object inside a HTMLtextarea
    */
   renderJSON() {
     // Never proceed if we have an error
@@ -367,5 +393,12 @@ class MicroSchemaParser {
     textArea.className = `${this.classNamespace}__textarea`;
     textArea.value = JSON.stringify(this.parsedData);
     this.containerEl.appendChild(textArea);
+  }
+
+  /**
+   * Handler for clearing the container
+   */
+  handleClose() {
+    this.clearContainer();
   }
 }
